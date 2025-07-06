@@ -13,7 +13,7 @@ training:
   lr_factor: 0.7
   grad_clip: 0.5
   tune_hyperparams: true
-  tuning_trials: 20
+  tuning_trials: 30
   
 validation:
   test_size: 0.2
