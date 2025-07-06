@@ -1,11 +1,13 @@
 data:
-  market_file: "data/market_research.csv"
-  farmer_file: "data/farmer_advise_dataset.csv"
+  market_file: "data/market_researcher_dataset.csv"
+  farmer_file: "data/farmer_advisor_dataset.csv"
   
+# Updated target columns based on your actual data
   market_target: "Market_Price_per_ton"
   farmer_yield_target: "Crop_Yield_ton"
   farmer_sustainability_target: "Sustainability_Score"
   
+  # Updated feature columns based on your actual CSV structure
   market_features:
     - Market_Price_per_ton
     - Demand_Index
@@ -15,14 +17,15 @@ data:
     - Weather_Impact_Score
     - Seasonal_Factor
     - Consumer_Trend_Index
+    - Product  # This will be encoded
     
   farmer_features:
     - Soil_pH
     - Soil_Moisture
     - Temperature_C
     - Rainfall_mm
-    - Crop_Type
+    - Crop_Type  # This will be encoded
     - Fertilizer_Usage_kg
     - Pesticide_Usage_kg
     - Crop_Yield_ton
-    - Sustainability_Score
+    - Sustainability_Score 
