@@ -1,0 +1,21 @@
+model:
+  ensemble_size: 3
+  hidden_sizes: [256, 128, 64]
+  dropout_rate: 0.2
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 1e-5
+  
+training:
+  epochs: 300
+  patience: 30
+  lr_patience: 15
+  lr_factor: 0.7
+  grad_clip: 0.5
+  tune_hyperparams: true
+  tuning_trials: 20
+  
+validation:
+  test_size: 0.2
+  val_size: 0.2
+  random_state: 42
