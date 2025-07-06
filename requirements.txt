@@ -7,3 +7,5 @@ tqdm
 matplotlib
 seaborn
 optuna
+plotly 
+kaleido
