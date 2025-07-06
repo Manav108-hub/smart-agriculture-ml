@@ -66,7 +66,7 @@ class DataPreprocessor:
         print("Preprocessing farmer data...")
         df = self.clean_data(df)
         
-        # Advanced feature engineering
+        # Advanced feature engineering with more domain knowledge
         df['Fertilizer_Efficiency'] = df['Crop_Yield_ton'] / (df['Fertilizer_Usage_kg'] + 1e-6)
         df['Pesticide_Efficiency'] = df['Crop_Yield_ton'] / (df['Pesticide_Usage_kg'] + 1e-6)
         df['Soil_Health_Index'] = df['Soil_pH'] * df['Soil_Moisture']
@@ -75,6 +75,25 @@ class DataPreprocessor:
         df['Optimal_pH'] = np.abs(df['Soil_pH'] - 6.5)  # Distance from optimal pH
         df['Moisture_Temp_Int'] = df['Soil_Moisture'] * df['Temperature_C']
         df['Rainfall_Temp_Ratio'] = df['Rainfall_mm'] / (df['Temperature_C'] + 1e-6)
+        
+        # Additional yield-specific features
+        df['Growing_Degree_Days'] = np.maximum(0, df['Temperature_C'] - 10) * 30  # Assuming 30-day period
+        df['Water_Stress_Index'] = df['Rainfall_mm'] / (df['Temperature_C'] + 1e-6)
+        df['Nutrient_Balance'] = df['Fertilizer_Usage_kg'] / (df['Crop_Yield_ton'] + 1e-6)
+        df['Chemical_Intensity'] = df['Pesticide_Usage_kg'] + df['Fertilizer_Usage_kg']
+        
+        # Sustainability-specific features
+        df['Environmental_Impact'] = (df['Pesticide_Usage_kg'] * 2 + df['Fertilizer_Usage_kg']) / df['Crop_Yield_ton']
+        df['Resource_Efficiency'] = df['Crop_Yield_ton'] / (df['Fertilizer_Usage_kg'] + df['Pesticide_Usage_kg'] + 1e-6)
+        df['Soil_Quality_Score'] = (df['Soil_pH'] - 4) * df['Soil_Moisture'] * 10  # Normalized soil quality
+        df['Sustainable_Yield_Ratio'] = df['Crop_Yield_ton'] / (df['Pesticide_Usage_kg'] * 0.1 + 1)
+        df['Eco_Friendly_Score'] = 100 - (df['Pesticide_Usage_kg'] + df['Fertilizer_Usage_kg'] * 0.5)
+        
+        # Polynomial features for non-linear relationships
+        df['Soil_pH_squared'] = df['Soil_pH'] ** 2
+        df['Temperature_squared'] = df['Temperature_C'] ** 2
+        df['Rainfall_squared'] = df['Rainfall_mm'] ** 2
+        df['Moisture_squared'] = df['Soil_Moisture'] ** 2
         
         # Encode categorical variables
         categorical_cols = df.select_dtypes(include=['object']).columns
@@ -85,8 +104,17 @@ class DataPreprocessor:
         
         return df
     
-    def select_features(self, X, y, k=20, model_name=""):
-        """Select top k features"""
+    def select_features(self, X, y, k=None, model_name=""):
+        """Select top k features with model-specific optimization"""
+        if k is None:
+            # Model-specific feature selection
+            if "sustainability" in model_name.lower():
+                k = min(25, X.shape[1])  # More features for complex sustainability relationships
+            elif "yield" in model_name.lower():
+                k = min(20, X.shape[1])  # Moderate features for yield prediction
+            else:
+                k = min(15, X.shape[1])  # Default for market price
+        
         if model_name not in self.feature_selectors:
             self.feature_selectors[model_name] = SelectKBest(f_regression, k=min(k, X.shape[1]))
             X_selected = self.feature_selectors[model_name].fit_transform(X, y)
