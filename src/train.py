@@ -29,9 +29,11 @@ class ModelTrainer:
             self.config = yaml.safe_load(file)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
-        # Create results directory
+        # Create required directories
         self.results_dir = Path("results")
         self.results_dir.mkdir(exist_ok=True)
+        self.saved_models_dir = Path("saved_models")
+        self.saved_models_dir.mkdir(exist_ok=True)
         
         # Agriculture color scheme
         self.colors = {
@@ -44,6 +46,7 @@ class ModelTrainer:
         
         print(f"Using device: {self.device}")
         print(f"Results will be saved to: {self.results_dir}")
+        print(f"Models will be saved to: {self.saved_models_dir}")
     
     def objective(self, trial, train_loader, val_loader, input_size, model_name):
         """Optuna objective function for hyperparameter tuning"""

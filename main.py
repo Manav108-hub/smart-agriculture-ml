@@ -236,13 +236,15 @@ def create_prediction_samples_plot(all_results, results_dir):
     plt.close()
 
 def main():
-    # Create directories
+    # Create all required directories
     Path("saved_models").mkdir(exist_ok=True)
     Path("config").mkdir(exist_ok=True)
     Path("data").mkdir(exist_ok=True)
     Path("results").mkdir(exist_ok=True)
     
     print("🌾 Starting Agriculture ML Training with Integrated Visualization 🌾")
+    print("=" * 80)
+    print(f"📁 Created directories: saved_models/, config/, data/, results/")
     print("=" * 80)
     
     # Load configuration
